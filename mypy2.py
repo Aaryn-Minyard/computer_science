@@ -1,0 +1,6 @@
+user_num = int(input("Input Number: "))
+div_num = int(input("Dividing Number: "))
+div1 = (user_num // div_num)
+div2 = (div1 // div_num)
+div3 = (div2 // div_num)
+print (f"{div1}\n {div2}\n {div3}")
