@@ -1,0 +1,6 @@
+{
+  "liveServer.settings.port": 5501,
+  "python.testing.pytestArgs": ["unit 3 types"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+}

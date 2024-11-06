@@ -1,0 +1,42 @@
+
+body {
+background-color: green;
+
+}
+#container {
+
+position:  relative;
+justfy-content: center;
+
+background-color: white;
+width: 600px;
+height: 1000px;
+margin-top: 0;
+margin-bottom: 0;
+margin-left: auto;
+margin-right: auto;
+
+}
+
+h1 {
+color: green;
+}
+
+#upvotes1 {
+float: left;
+width: 200px;
+height: 200px;
+
+}
+
+#upvotes2 {
+float: right;
+width: 200px;
+height: 200px;
+
+}
+
+#myp {
+display: inline;
+position: relative;
+}
