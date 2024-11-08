@@ -33,6 +33,9 @@ class Artwork:
         elif self.artist.name in tier3:
             amount = 400000 * (2021 - self.year_created) / (self.artist.death_year - self.artist.birth_year)
             return f"${amount:,.2f}"
+        elif self.year_created > 2021:
+            amount = 12340.56 * (2021 + self.year_created) / (self.artist.death_year - self.artist.birth_year)
+            return f"${amount:,.2f}"
         else:
             return f"${amount:,.2f}"
 
