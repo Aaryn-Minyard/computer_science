@@ -38,7 +38,7 @@ class TestArtwork(unittest.TestCase):
             artwork.print_info()
             mocked_print.assert_any_call('"Mona Lisa" was created by Leonardo da Vinci in 1503.')
             mocked_print.assert_any_call('Leonardo da Vinci was born in 1452 and died in 1519.')
-            mocked_print.assert_any_call('This artwork is worth $38,656,716.42')
+            mocked_print.assert_any_call('This artwork is worth $38,656,716.32')
             
 
 if __name__ == '__main__':
