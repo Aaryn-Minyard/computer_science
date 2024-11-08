@@ -1,3 +1,12 @@
+tier1 = ["Leonardo da Vinci","Vincent van Gogh","Pablo Picasso","Michelangelo", "Rembrandt"
+]
+
+tier2 = ["Claude Monet","Salvador Dalí","Frida Kahlo","Georgia O'Keeffe","Andy Warhol"
+]
+
+tier3 = ["Gustav Klimt","Edvard Munch","Wassily Kandinsky","René Magritte","Hieronymus Bosch"
+]
+
 class Artist:
    def __init__(self, name, birth_year, death_year):
        self.name = name
@@ -12,9 +21,25 @@ class Artwork:
         self.year_created = year_created
         self.artist = artist
 
+    def price(self):
+        amount = 12340.56 * (2021 - self.year_created) / (self.artist.death_year - self.artist.birth_year) # default value
+         
+        if self.artist.name in tier1:
+            amount = 5000000 * (2021 - self.year_created) / (self.artist.death_year - self.artist.birth_year)
+            return f"${amount:,.2f}"
+        elif self.artist.name in tier2:
+            amount = 1000000 * (2021 - self.year_created) / (self.artist.death_year - self.artist.birth_year)
+            return f"${amount:,.2f}"
+        elif self.artist.name in tier3:
+            amount = 400000 * (2021 - self.year_created) / (self.artist.death_year - self.artist.birth_year)
+            return f"${amount:,.2f}"
+        else:
+            return f"${amount:,.2f}"
+
     def print_info(self):
         print(f'"{self.title}" was created by {self.artist.name} in {self.year_created}.')
         print(f'{self.artist.name} was born in {self.artist.birth_year} and died in {self.artist.death_year}.')
+        print(f'This artwork is worth {self.price()}')
 
 if __name__ == "__main__":
     user_artist_name = input("Enter artist name: ")
