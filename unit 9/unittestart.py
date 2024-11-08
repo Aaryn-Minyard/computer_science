@@ -9,6 +9,7 @@ class TestArtwork(unittest.TestCase):
         self.artist_tier2 = Artist("Claude Monet", 1840, 1926)
         self.artist_tier3 = Artist("Gustav Klimt", 1862, 1918)
         self.artist_other = Artist("Unknown Artist", 1900, 1980)
+        self.artist_other2 = Artist("Aaryn Minyard", 2001, 2101)
 
     def test_price_tier1(self):
         artwork = Artwork("Mona Lisa", 1503, self.artist_tier1)
@@ -25,6 +26,10 @@ class TestArtwork(unittest.TestCase):
     def test_price_other(self):
         artwork = Artwork("Unknown Artwork", 1950, self.artist_other)
         self.assertEqual(artwork.price(), "$10,952.25")
+
+    def test_price_future(self):
+        artwork = Artwork("Future Artwork", 2025, self.artist_other)
+        self.assertEqual(artwork.price(), "$624,123.82")
 
     def test_print_info(self):
         artwork = Artwork("Mona Lisa", 1503, self.artist_tier1)
