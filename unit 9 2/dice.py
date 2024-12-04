@@ -1,4 +1,5 @@
 import random
+import time
 
 class GVDie:  
    def __init__(self):      
@@ -27,8 +28,9 @@ def roll_total(die, total):
     return rolls
 
 if __name__ == "__main__":
+    seed = seed = random.seed(time.time())
     die = GVDie()   # Create a GVDie object
-    die.set_seed(15)   # Set the GVDie object with seed value 15
+    die.set_seed(seed)   # Set the GVDie object with seed value 15
           
     total = int(input("Enter the target total: "))  # Ask for user input
     rolls = roll_total(die, total)  # Get the number of rolls to reach the total
