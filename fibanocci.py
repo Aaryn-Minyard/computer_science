@@ -13,13 +13,18 @@ def fibonacci(n):
     return b
 
 def fibonacci_sequence(n):
-    """Return the Fibonacci sequence up to the nth number."""
+    """Return the Fibonacci sequence up to and including the nth number."""
     if n < 0:
         raise ValueError("Input must be a non-negative integer.")
+    if n == 0:
+        return [0]
+    elif n == 1:
+        return [0, 1]
     sequence = [0, 1]
-    for _ in range(2, n):
+    for _ in range(2, n + 1):  # Adjusted to include the nth number
         sequence.append(sequence[-1] + sequence[-2])
-    return sequence[:n]
+    return sequence
+
 
 # Unit tests for the Fibonacci function
 import unittest
