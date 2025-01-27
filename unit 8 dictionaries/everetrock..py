@@ -17,7 +17,7 @@ game_options = {
     "Earth": {"beats": ["Air", "Darkness", "Alien"], "ties": ["Earth"], "loses": ["Fire", "Water", "Chuck Norris"]},
     "Light": {"beats": ["Darkness", "Alien", "Air"], "ties": ["Light"], "loses": ["Bruce Willis", "Earth", "Chuck Norris"]},
     "Darkness": {"beats": ["Light", "Earth", "Batman"], "ties": ["Darkness"], "loses": ["Fire", "Water", "Chuck Norris"]},
-    "Chuck Norris": {"beats": list(game_options.keys()), "ties": ["Chuck Norris"], "loses": []},  # Chuck Norris beats all except himself
+    "Chuck Norris": {"beats": ["Rock", "Paper", "Scissors", "Lizard", "Spock", "Glock", "Batman", "Bruce Willis", "Fire", "Water", "Air", "Earth", "Light", "Darkness", "Alien"], "ties": ["Chuck Norris"], "loses": []},  # Chuck Norris beats all except himself
 }
 
 # Game settings
