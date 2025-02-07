@@ -28,4 +28,6 @@ def carwash():
     total_price = base_price + sum([services[service] for service in selected_services])
     print(f"total price: {total_price}")
 
-carwash()
+
+if __name__ == '__main__':
+    carwash()
