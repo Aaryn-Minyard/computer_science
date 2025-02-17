@@ -1,14 +1,20 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+# Get absolute path to the "Sacred_heart" directory
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'hospital.db')
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong, secret value
 
-# Configure the SQLite database (persistent storage)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///hospital.db'
+# Configure the SQLite database (persistent storage) inside the Sacred_heart folder
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_PATH}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 # ------------------------
@@ -16,10 +22,6 @@ db = SQLAlchemy(app)
 # ------------------------
 
 class User(db.Model):
-    """
-    A general user model to cover doctors, admins, and patients.
-    The 'role' field determines which type of user it is.
-    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -36,7 +38,6 @@ class Doctor(db.Model):
     name = db.Column(db.String(120), nullable=False)
     specialty = db.Column(db.String(120))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Link to the login user account
-    # Relationship to patients (one-to-many)
     patients = db.relationship('Patient', backref='doctor', lazy=True)
     
 class Patient(db.Model):
@@ -57,12 +58,15 @@ class Appointment(db.Model):
 # Routes for Authentication
 # ------------------------
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        # Find the user in the database
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             session['user_id'] = user.id
@@ -85,13 +89,10 @@ def logout():
 
 @app.route('/dashboard')
 def dashboard():
-    # Only allow logged-in users to view the dashboard
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    # For this example, show the doctor dashboard if the user is a doctor.
     if session.get('role') == 'doctor':
-        # Get the doctor profile using the linked user account
         doctor = Doctor.query.filter_by(user_id=session['user_id']).first()
         if doctor:
             patients = Patient.query.filter_by(doctor_id=doctor.id).all()
@@ -109,7 +110,6 @@ def dashboard():
 
 @app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
-    # For now, assume that only an admin can add patients.
     if 'user_id' not in session or session.get('role') != 'admin':
         flash("Access denied.", "danger")
         return redirect(url_for('login'))
@@ -118,13 +118,13 @@ def add_patient():
         name = request.form['name']
         age = request.form['age']
         address = request.form['address']
-        doctor_id = request.form['doctor_id']  # Ensure this ID corresponds to an existing doctor
+        doctor_id = request.form['doctor_id']
         new_patient = Patient(name=name, age=int(age), address=address, doctor_id=int(doctor_id))
         db.session.add(new_patient)
         db.session.commit()
         flash("Patient added successfully.", "success")
         return redirect(url_for('list_patients'))
-    # For GET, display a simple form (in a real app, include proper error handling and form validation)
+    
     doctors = Doctor.query.all()
     return render_template('add_patient.html', doctors=doctors)
 
@@ -148,13 +148,13 @@ def book_appointment():
     if request.method == 'POST':
         doctor_id = request.form['doctor_id']
         patient_id = request.form['patient_id']
-        # For simplicity, we use the current time; a real app would allow choosing a date/time
         appointment_date = datetime.utcnow()
         appointment = Appointment(doctor_id=int(doctor_id), patient_id=int(patient_id), appointment_date=appointment_date)
         db.session.add(appointment)
         db.session.commit()
         flash("Appointment booked.", "success")
         return redirect(url_for('dashboard'))
+    
     doctors = Doctor.query.all()
     patients = Patient.query.all()
     return render_template('book_appointment.html', doctors=doctors, patients=patients)
@@ -164,7 +164,6 @@ def book_appointment():
 # ------------------------
 
 if __name__ == '__main__':
-    # Create database tables if they don't exist
     with app.app_context():
         db.create_all()
     app.run(debug=True)
