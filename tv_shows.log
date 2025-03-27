@@ -1,0 +1,17 @@
+2025-03-14 00:01:47,679 - INFO - Successfully processed 'C:\Users\boosh\AppData\Local\Temp\tmpi8sdb6c7.txt'.
+2025-03-14 00:02:07,042 - INFO - Successfully processed 'file1.txt'.
+2025-03-14 00:02:24,507 - ERROR - Error processing file C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt: invalid literal for int() with base 10: '8 Scrubs'
+2025-03-14 00:02:24,507 - ERROR - Error processing file C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt: invalid literal for int() with base 10: '8 Scrubs'
+2025-03-14 00:02:33,598 - INFO - Successfully processed 'C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt'.
+2025-03-14 00:02:33,600 - INFO - Successfully processed 'C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt'.
+2025-03-14 13:19:58,504 - INFO - Successfully processed 'file1.txt'.
+2025-03-14 13:21:18,694 - INFO - Successfully processed 'C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt'.
+2025-03-14 13:21:18,698 - INFO - Successfully processed 'C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt'.
+2025-03-14 13:22:31,849 - INFO - Successfully processed 'C:\Users\boosh\AppData\Local\Temp\tmpxgscvllh.txt'.
+2025-03-14 13:22:54,900 - INFO - Successfully processed 'C:\Users\boosh\AppData\Local\Temp\tmpj7abbp5i.txt'.
+2025-03-14 13:23:20,048 - INFO - Successfully processed 'C:\Users\boosh\AppData\Local\Temp\tmpniwpv0ns.txt'.
+2025-03-14 13:23:31,876 - INFO - Successfully processed 'file1.txt'.
+2025-03-14 13:24:31,130 - ERROR - Error processing file C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt: invalid literal for int() with base 10: '13 Dogs'
+2025-03-14 13:24:31,131 - ERROR - Error processing file C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt: invalid literal for int() with base 10: '13 Dogs'
+2025-03-14 13:24:53,515 - INFO - Successfully processed 'C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt'.
+2025-03-14 13:24:53,518 - INFO - Successfully processed 'C:\Users\boosh\OneDrive\Desktop\computer_science\file1.txt'.
