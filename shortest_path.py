@@ -70,8 +70,8 @@ def plot_tsp(points, route):
     plt.scatter(xs, ys, c='blue')
     
     # Annotate points with their indices.
-    for i, (x, y) in enumerate(points):
-        plt.text(x, y, str(i), fontsize=12, color='red')
+    
+        
     
     # Plot the route.
     for i in range(len(route)-1):
@@ -87,15 +87,14 @@ def plot_tsp(points, route):
 # ----------------------------------
 # 5. Main function putting it all together.
 def main():
-    n_points = 10  # Adjust as needed.
+    n_points = 1000
+      # Adjust as needed.
     points = generate_random_points(n_points)
     
     # Create the complete graph.
     graph = create_complete_graph(points)
     
     # Print the graph dictionary to the console.
-    print("Complete Graph (dictionary format):")
-    pprint.pprint(graph)
     
     # Choose a starting node (for simplicity, we choose node 0).
     start = 0
