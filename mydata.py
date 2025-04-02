@@ -12,26 +12,75 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 # SQL query to create a new table
-insert_query = "INSERT INTO yourtable (name, age) VALUES (%s, %s)"
-values = ('Aaryn Minyard', 23)
+def create_table_query():
+    create_table_query = """
+    CREATE TABLE IF NOT EXISTS yourtable (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        age INT NOT NULL
+    )
+    """
 
-cursor.execute(insert_query, values)
-conn.commit()
-print("Data inserted successfully!")
+    return create_table_query
 
 
-select_query = "SELECT * FROM yourtable"
 
-# Execute the query
-cursor.execute(select_query)
 
-# Fetch all rows from the result
-rows = cursor.fetchall()
+def create_insert_query():
+    insert_query = "INSERT INTO yourtable (name, age) VALUES (%s, %s)"
+    values = input("Enter values for name and age separated by a comma: ").split(",")
+    values = [value.strip() for value in values]  # Clean up the input
+    return insert_query,values
 
-# Print the rows
-for row in rows:
-    print(f"ID: {row[0]}, Name: {row[1]}, Age: {row[2]}")
 
-# Close the cursor and connection
-cursor.close()
-conn.close()
+
+
+# Commit the transaction to save changes
+
+
+
+def get_select_query():
+    select_query = "SELECT * FROM yourtable"
+    cursor.execute(select_query)  # Execute the query first
+    rows = cursor.fetchall()  # Fetch all results
+    
+    if rows:
+        for row in rows:
+            print(f"ID: {row[0]}, Name: {row[1]}, Age: {row[2]}")
+    else:
+        print("No data found.")
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    
+    def menu ():
+        while True:
+            print("1. Create Table")
+            print("2. Insert Data")
+            print("3. Select Data")
+            print("4. Exit")
+            choice = input("Enter your choice: ")
+            if choice == '1':
+                cursor.execute(create_table_query())
+                conn.commit()
+                print("Table created successfully!")
+            elif choice == '2':
+                insert_query, values = create_insert_query()
+                cursor.execute(insert_query, values)
+                conn.commit()
+                print("Data inserted successfully!")
+            elif choice == '3':
+                get_select_query()
+                
+            else: 
+                print("Exiting...")
+                cursor.close()
+                conn.close()
+                exit()
+
+menu()
