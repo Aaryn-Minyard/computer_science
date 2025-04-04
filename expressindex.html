@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL with JavaScript</title>
+    <link rel="stylesheet" href="expressindex.css">
+    
+</head>
+
+<body>
+    <h1>User List</h1>
+    <ul id="user-list"></ul>
+
+    <script>
+        // Fetch data from the backend
+        fetch('http://localhost:3000/users')
+            .then(response => response.json())
+            .then(data => {
+                const userList = document.getElementById('user-list');
+                data.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = `ID: ${user.id}, Name: ${user.name}, Age: ${user.age}`;
+                    userList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+
+</html>
