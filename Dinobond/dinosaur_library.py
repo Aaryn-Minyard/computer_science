@@ -88,12 +88,12 @@ dinosaur_library = {
             "Lambeosaurus": Dinosaur("Lambeosaurus", 92, 1, 31, 27, 34, "Crest Bash"),
             "Ouranosaurus": Dinosaur("Ouranosaurus", 94, 1, 32, 26, 33, "Sail Swipe"),
             "Maiasaura": Dinosaur("Maiasaura", 96, 1, 28, 30, 35, "Mother's Charge"),
-            "Dryosaurus": Dinosaur("Dryosaurus", 90, 1, 33, 25, 32, "Quick Kick")
+            "Therizinosaurus": Dinosaur("Therizinosaurus", 90, 1, 33, 25, 32, "Spinning Slash")
         },
         "Small": {
             "Gallimimus": Dinosaur("Gallimimus", 80, 1, 35, 15, 20, "Speed Dash"),
             "Hypsilophodon": Dinosaur("Hypsilophodon", 78, 1, 36, 14, 19, "Quick Nibble"),
-            "Leaellynasaura": Dinosaur("Leaellynasaura", 76, 1, 37, 13, 18, "Tail Flick"),
+            "Dryosaurus": Dinosaur("Dryosaurus", 76, 1, 37, 13, 18, "Tail Flick"),
             "Othnielia": Dinosaur("Othnielia", 74, 1, 38, 12, 17, "Nose Bump"),
             "Parksosaurus": Dinosaur("Parksosaurus", 72, 1, 39, 11, 16, "Leg Sweep"),
             "Thescelosaurus": Dinosaur("Thescelosaurus", 70, 1, 40, 10, 15, "Body Slam"),
@@ -106,10 +106,10 @@ dinosaur_library = {
 
 "Carnivore": {
         "Large": {
-            "Tyrannosaurus": Dinosaur("Tyrannosaurus Rex", 100, 1, 60, 20, 30, "Tail Swipe"),
+            "Tyrannosaurus": Dinosaur("Tyrannosaurus Rex", 100, 1, 60, 20, 30, "Tyrant's Roar"),
             "Spinosaurus": Dinosaur("Spinosaurus", 100, 1, 40, 20, 30, "Water Slash"),
-            "Giganotosaurus": Dinosaur("Giganotosaurus", 102, 1, 58, 22, 32, "Jaw Crush"),
-            "Carcharodontosaurus": Dinosaur("Carcharodontosaurus", 104, 1, 56, 24, 34, "Bite Frenzy"),
+            "Giganotosaurus": Dinosaur("Giganotosaurus", 102, 1, 58, 22, 32, "Giant's Fury"),
+            "Carcharodontosaurus": Dinosaur("Carcharodontosaurus", 104, 1, 56, 24, 34, "Shark Bite"),
             "Mapusaurus": Dinosaur("Mapusaurus", 106, 1, 54, 26, 36, "Pack Hunt"),
             "Acrocanthosaurus": Dinosaur("Acrocanthosaurus", 108, 1, 52, 28, 38, "Back Slash"),
             "Tarbosaurus": Dinosaur("Tarbosaurus", 110, 1, 50, 30, 40, "Roar Blast"),
