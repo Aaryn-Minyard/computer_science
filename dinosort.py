@@ -2,83 +2,120 @@ import time
 import matplotlib.pyplot as plt
 import mplcursors
 
-# Sample Dinosaur class and data
+# ─── Dinosaur class & data ────────────────────────────────────────────────────
 class Dinosaur:
-    def __init__(self, name, weight):
+    def __init__(self, name, weight_tons):
         self.name = name
-        self.weight = weight
-
+        self.weight = weight_tons
     def __repr__(self):
-        return f"{self.name} ({self.weight} tons)"
+        return f"{self.name} ({self.weight} tons)"
 
 sample_dinosaurs = [
-    Dinosaur("Tyrannosaurus", 8),
-    Dinosaur("Parasaurolophus", 2.5),
-    Dinosaur("Stegosaurus", 3.1),
-    Dinosaur("Triceratops", 6),
-    Dinosaur("Brachiosaurus", 50),
-    Dinosaur("Ankylosaurus", 6),
-    Dinosaur("Spinosaurus", 7),
-    Dinosaur("Allosaurus", 2.2),
-    Dinosaur("Iguanodon", 3.5),
+    Dinosaur("Tyrannosaurus rex",      8.4),
+    Dinosaur("Spinosaurus aegyptiacus",10.2),
+    Dinosaur("Giganotosaurus carolinii",8.0),
+    Dinosaur("Carcharodontosaurus saharicus",7.5),
+    Dinosaur("Therizinosaurus cheloniformis",6.2),
+    Dinosaur("Tarbosaurus bataar",     6.0),
+    Dinosaur("Epanterias amplexus",     4.5),
+    Dinosaur("Mapusaurus roseae",       4.8),
+    Dinosaur("Edmarka rex",             4.0),
+    Dinosaur("Suchomimus tenerensis",    3.9),
+    Dinosaur("Shantungosaurus giganteus",16.0),
+    Dinosaur("Triceratops horridus",   12.0),
+    Dinosaur("Eotriceratops xerinsularis",12.0),
+    Dinosaur("Stegosaurus stenops",     6.0),
+    Dinosaur("Ankylosaurus magniventris",6.0),
+    Dinosaur("Iguanodon bernissartensis",3.5),
+    Dinosaur("Parasaurolophus walkeri", 2.5),
+    Dinosaur("Allosaurus fragilis",     2.2),
 ]
 
-# Sorting Algorithms
+# ─── Sorting implementations ──────────────────────────────────────────────────
 def bubble_sort(dinos):
-    dinos = dinos.copy()
-    n = len(dinos)
+    a = dinos.copy()
+    n = len(a)
     for i in range(n):
-        for j in range(0, n - i - 1):
-            if dinos[j].weight > dinos[j + 1].weight:
-                dinos[j], dinos[j + 1] = dinos[j + 1], dinos[j]
-    return dinos
+        for j in range(n-1-i):
+            if a[j].weight > a[j+1].weight:
+                a[j], a[j+1] = a[j+1], a[j]
+    return a
 
 def selection_sort(dinos):
-    dinos = dinos.copy()
-    n = len(dinos)
+    a = dinos.copy()
+    n = len(a)
     for i in range(n):
-        min_idx = i
+        min_i = i
         for j in range(i+1, n):
-            if dinos[j].weight < dinos[min_idx].weight:
-                min_idx = j
-        dinos[i], dinos[min_idx] = dinos[min_idx], dinos[i]
-    return dinos
+            if a[j].weight < a[min_i].weight:
+                min_i = j
+        a[i], a[min_i] = a[min_i], a[i]
+    return a
 
-# Time and sort
-def time_sort(sort_func, dinos):
+def quick_sort(dinos):
+    if len(dinos) <= 1:
+        return dinos.copy()
+    pivot = dinos[len(dinos)//2].weight
+    left  = [d for d in dinos if d.weight <  pivot]
+    mid   = [d for d in dinos if d.weight == pivot]
+    right = [d for d in dinos if d.weight >  pivot]
+    return quick_sort(left) + mid + quick_sort(right)
+
+def merge_sort(dinos):
+    if len(dinos) <= 1:
+        return dinos.copy()
+    mid = len(dinos)//2
+    left = merge_sort(dinos[:mid])
+    right= merge_sort(dinos[mid:])
+    merged = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i].weight <= right[j].weight:
+            merged.append(left[i]); i += 1
+        else:
+            merged.append(right[j]); j += 1
+    merged.extend(left[i:] or right[j:])
+    return merged
+
+# ─── Timing helper ───────────────────────────────────────────────────────────
+def time_sort(func, dinos):
     start = time.perf_counter()
-    sorted_dinos = sort_func(dinos)
-    duration = time.perf_counter() - start
-    return sorted_dinos, duration
+    sorted_list = func(dinos)
+    elapsed = time.perf_counter() - start
+    return sorted_list, elapsed
 
-# Graph plotting
-def plot_dinosaurs(dinos, title):
-    weights = [d.weight for d in dinos]
-    labels = [d.name for d in dinos]
-    fig, ax = plt.subplots()
-    bars = ax.bar(range(len(dinos)), weights)
+# ─── Run all sorts ───────────────────────────────────────────────────────────
+algos = {
+    "Bubble Sort":    bubble_sort,
+    "Selection Sort": selection_sort,
+    "Quick Sort":     quick_sort,
+    "Merge Sort":     merge_sort,
+}
 
-    ax.set_title(title)
-    ax.set_xlabel("Dinosaurs")
-    ax.set_ylabel("Weight (kg)")
-    ax.set_xticks(range(len(dinos)))
-    ax.set_xticklabels([""] * len(dinos))  # Hide labels for clarity
+results = {}
+for name, fn in algos.items():
+    sorted_dinos, t = time_sort(fn, sample_dinosaurs)
+    results[name] = (sorted_dinos, t)
 
-    # Hover interaction
+# ─── Plotting ────────────────────────────────────────────────────────────────
+colors = ["#6b8e23", "#8b4513"]  # olive‐green & saddle‐brown
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+axes = axes.flatten()
+
+for idx, (name, (sorted_dinos, t)) in enumerate(results.items()):
+    ax = axes[idx]
+    weights = [d.weight for d in sorted_dinos]
+    bars = ax.bar(range(len(weights)), weights,
+                  color=colors[idx % len(colors)])
+    ax.set_title(f"{name}  (t = {t:.6f}s)")
+    ax.set_ylabel("Weight (tons)")
+    ax.set_xticks([])
+    # interactive hover
     cursor = mplcursors.cursor(bars, hover=True)
     @cursor.connect("add")
-    def on_hover(sel):
-        idx = sel.index
-        sel.annotation.set_text(f"{labels[idx]}\n{weights[idx]} kg")
+    def _(sel):
+        d = sorted_dinos[sel.index]
+        sel.annotation.set_text(f"{d.name}\n{d.weight} tons")
 
-    plt.show()
-
-# Compare and visualize
-bubble_sorted, bubble_time = time_sort(bubble_sort, sample_dinosaurs)
-selection_sorted, selection_time = time_sort(selection_sort, sample_dinosaurs)
-
-print(f"Bubble Sort Time: {bubble_time:.6f} seconds")
-print(f"Selection Sort Time: {selection_time:.6f} seconds")
-
-plot_dinosaurs(bubble_sorted, "Bubble Sort - Dinosaurs by Weight")
-plot_dinosaurs(selection_sorted, "Selection Sort - Dinosaurs by Weight")
+plt.tight_layout()
+plt.show()
