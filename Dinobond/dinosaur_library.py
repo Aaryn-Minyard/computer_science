@@ -1,7 +1,7 @@
 import random
 
 class Dinosaur:
-    def __init__(self, name, health, level, attack, defense, speed, special_move):
+    def __init__(self, name, health, level, attack, defense, speed, special_move, mode="Sandbox"):
         self.name = name
         self.max_health = health
         self.health = health
@@ -12,21 +12,20 @@ class Dinosaur:
         self.special_move = special_move
         self.hunger = 0  # 0 = full, higher = more hungry
         self.attachment = 5  # Start with a moderate attachment level
+        self.mode = mode  # "Sandbox" or "Adventure"
 
     def feed(self):
         if self.health >= self.max_health:
             return f"{self.name} is already at full health and doesn't need food!"
         self.health = min(self.health + 20, self.max_health)
-        # Feeding restores some attachment too.
         self.attachment += 1
         return f"You fed {self.name}. Health is now {self.health}."
 
     def pet(self):
-        self.attachment += 2  # Petting boosts attachment more
+        self.attachment += 2
         return f"You pet {self.name}. Attachment level is now {self.attachment}."
 
     def walk(self):
-        # Expanded list of events with more randomness and complexity
         events = [
             ("ran into a patch of wildflowers and frolicked happily!", +5, +3),
             ("found a shiny rock and became momentarily distracted.", 0, +2),
@@ -62,7 +61,39 @@ class Dinosaur:
     def __str__(self):
         return (f"{self.name} (Lv: {self.level}, HP: {self.health}/{self.max_health}, "
                 f"ATK: {self.attack}, DEF: {self.defense}, Special: {self.special_move}, "
-                f"Attachment: {self.attachment})")
+                f"Attachment: {self.attachment}, Mode: {self.mode})")
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "health": self.max_health,
+            "level": self.level,
+            "attack": self.attack,
+            "defense": self.defense,
+            "speed": self.speed,
+            "special_move": self.special_move,
+            "hunger": self.hunger,
+            "attachment": self.attachment,
+            "mode": self.mode
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        dino = cls(
+            data["name"],
+            data["health"],
+            data["level"],
+            data["attack"],
+            data["defense"],
+            data["speed"],
+            data["special_move"],
+            data.get("mode", "Sandbox")
+        )
+        dino.hunger = data.get("hunger", 0)
+        dino.attachment = data.get("attachment", 5)
+        dino.health = data.get("health", data["health"])
+        return dino
+
 
 dinosaur_library = {
     "Herbivore": {
