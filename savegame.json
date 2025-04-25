@@ -1,1 +1,1 @@
-{"name": "Mamenchisaurus", "health": 158, "level": 1, "attack": 16, "defense": 22, "speed": 48, "special_move": "Neck Swing", "hunger": 0, "attachment": 10, "mode": "Sandbox"}
+{"name": "Tyrannosaurus Rex", "health": 100, "level": 1, "attack": 60, "defense": 20, "speed": 30, "special_move": "Tyrant's Roar", "hunger": 0, "attachment": 23, "mode": "Adventure"}

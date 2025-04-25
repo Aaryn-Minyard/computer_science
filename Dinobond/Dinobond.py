@@ -4,6 +4,7 @@ import random
 import json
 import os
 from dinosaur_library import Dinosaur, dinosaur_library
+from adventure_logic import *
 
 # ================== SAVE/LOAD FUNCTIONS ==================
 SAVE_FILE = "savegame.json"
@@ -178,10 +179,16 @@ class DinoSelectionScreen:
         if not (diet and size and dino_name):
             messagebox.showerror("Selection Error", "Please select a diet, size, and dinosaur.")
             return
+
         selected_dino = dinosaur_library[diet][size][dino_name]
         selected_dino.mode = self.mode
         self.frame.destroy()
-        DinoGameGUI(self.master, selected_dino)
+
+        if self.mode == "Sandbox":
+            DinoGameGUI(self.master, selected_dino)
+        else:
+            AdventureMode(self.master, selected_dino)  # Make sure AdventureMode is defined!
+
 
 # ================== MAIN GAME SCREEN ==================
 class DinoGameGUI:
@@ -274,10 +281,16 @@ class ModeSelector(tk.Tk):
         self.title("Choose Game Mode")
         self.configure(bg="black")
         self.geometry("400x250")
+
         prompt = tk.Label(self, text="Choose Game Mode:", fg="red", bg="black", font=("Arial", 14))
         prompt.pack(pady=10)
-        tk.Button(self, text="Sandbox", command=lambda: self.start_new_game("Sandbox"), fg="red", bg="black", font=("Arial", 14)).pack(pady=5)
-        tk.Button(self, text="Adventure", command=lambda: self.start_new_game("Adventure"), fg="red", bg="black", font=("Arial", 14)).pack(pady=5)
+
+        tk.Button(self, text="Sandbox", command=lambda: self.start_new_game("Sandbox"),
+                  fg="red", bg="black", font=("Arial", 14)).pack(pady=5)
+
+        tk.Button(self, text="Adventure", command=lambda: self.start_new_game("Adventure"),
+                  fg="red", bg="black", font=("Arial", 14)).pack(pady=5)
+
         self.mainloop()
 
     def start_new_game(self, mode):
@@ -288,6 +301,7 @@ class ModeSelector(tk.Tk):
         new_root.configure(bg="#e3f2e1")
         DinoSelectionScreen(new_root, mode)
         new_root.mainloop()
+
 
 # ================== LAUNCH THE GAME ==================
 if __name__ == "__main__":
