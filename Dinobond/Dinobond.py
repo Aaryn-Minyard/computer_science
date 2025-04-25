@@ -99,7 +99,8 @@ class BattleScreen:
         tk.Button(button_frame, text="Run", font=("Helvetica", 14), bg="#90a4ae", command=self.run_away).pack(side="right", padx=10)
 
     def attack(self):
-        player_damage = max(1, self.player_dino.attack - self.opponent.defense)
+        attack_bonus = self.player_dino.attachment // 10 
+        player_damage = max(1, self.player_dino.attack + attack_bonus - self.opponent.defense)
         opponent_damage = max(1, self.opponent.attack - self.player_dino.defense)
         self.opponent.health -= player_damage
         self.log.insert(tk.END, f"\n{self.player_dino.name} attacks {self.opponent.name} for {player_damage} damage!")

@@ -1,1 +1,1 @@
-{"name": "Tyrannosaurus Rex", "health": 100, "level": 1, "attack": 60, "defense": 20, "speed": 30, "special_move": "Tyrant's Roar", "hunger": 0, "attachment": 23, "mode": "Adventure"}
+{"name": "Ceratosaurus", "health": 96, "level": 1, "attack": 42, "defense": 23, "speed": 28, "special_move": "Horn Jab", "hunger": 0, "attachment": 7, "mode": "Adventure"}
