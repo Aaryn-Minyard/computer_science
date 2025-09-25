@@ -11,8 +11,8 @@ def bogosort(arr):
     print("Number of tries:", tries)
     return arr
 
-arr = [3, 2, 5, 1, 4]
-arr2 = [3, 2, 5, 1, 4]
+arr = [3, 2, 5, 1, 4, 7, 6, 9, 8, 10]
+arr2 = [3, 2, 5, 1, 4, 7, 6, 9, 8, 10]
 arr3 = [3, 2, 5, 1, 4, 7, 6, 9, 8, 10, 12, 11, 14, 13, 15]
 print("Unsorted array:", arr)
 print("Sorted array:", bogosort(arr)) 
