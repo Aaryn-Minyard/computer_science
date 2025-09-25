@@ -1616,7 +1616,8 @@ def _allow_interrupt(prepare_notifier, handle_sigint):
     If SIGINT was indeed caught, after exiting the on_signal() function the
     interpreter reacts to the signal according to the handler function which
     had been set up by a signal.signal() call; here, we arrange to call the
-    backend-specific *handle_sigint* function.  Finally, we call the old SIGINT
+    backend-specific *handle_sigint* function, passing the notifier object
+    as returned by prepare_notifier().  Finally, we call the old SIGINT
     handler with the same arguments that were given to our custom handler.
 
     We do this only if the old handler for SIGINT was not None, which means
@@ -1626,7 +1627,7 @@ def _allow_interrupt(prepare_notifier, handle_sigint):
     Parameters
     ----------
     prepare_notifier : Callable[[socket.socket], object]
-    handle_sigint : Callable[[], object]
+    handle_sigint : Callable[[object], object]
     """
 
     old_sigint_handler = signal.getsignal(signal.SIGINT)
@@ -1642,9 +1643,10 @@ def _allow_interrupt(prepare_notifier, handle_sigint):
     notifier = prepare_notifier(rsock)
 
     def save_args_and_handle_sigint(*args):
-        nonlocal handler_args
+        nonlocal handler_args, notifier
         handler_args = args
-        handle_sigint()
+        handle_sigint(notifier)
+        notifier = None
 
     signal.signal(signal.SIGINT, save_args_and_handle_sigint)
     try:
@@ -2218,7 +2220,7 @@ class FigureCanvasBase:
         # Characters to be avoided in a NT path:
         # https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx#naming_conventions
         # plus ' '
-        removed_chars = r'<>:"/\|?*\0 '
+        removed_chars = '<>:"/\\|?*\0 '
         default_basename = default_basename.translate(
             {ord(c): "_" for c in removed_chars})
         default_filetype = self.get_default_filetype()
@@ -2728,23 +2730,24 @@ class FigureManagerBase:
         """For GUI backends, resize the window (in physical pixels)."""
 
     def get_window_title(self):
-        """
-        Return the title text of the window containing the figure, or None
-        if there is no window (e.g., a PS backend).
-        """
-        return 'image'
+        """Return the title text of the window containing the figure."""
+        return self._window_title
 
     def set_window_title(self, title):
         """
         Set the title text of the window containing the figure.
-
-        This has no effect for non-GUI (e.g., PS) backends.
 
         Examples
         --------
         >>> fig = plt.figure()
         >>> fig.canvas.manager.set_window_title('My figure')
         """
+        # This attribute is not defined in __init__ (but __init__ calls this
+        # setter), as derived classes (real GUI managers) will store this
+        # information directly on the widget; only the base (non-GUI) manager
+        # class needs a specific attribute for it (so that filename escaping
+        # can be checked in the test suite).
+        self._window_title = title
 
 
 cursors = tools.cursors

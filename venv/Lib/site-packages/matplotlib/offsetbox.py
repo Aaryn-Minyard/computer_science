@@ -201,7 +201,7 @@ def _get_aligned_offsets(yspans, height, align="baseline"):
 
 class OffsetBox(martist.Artist):
     """
-    The OffsetBox is a simple container artist.
+    A simple container artist.
 
     The child artists are meant to be drawn at a relative position to its
     parent.
@@ -794,9 +794,10 @@ class TextArea(OffsetBox):
         return self._offset
 
     def get_bbox(self, renderer):
-        _, h_, d_ = renderer.get_text_width_height_descent(
-            "lp", self._text._fontproperties,
-            ismath="TeX" if self._text.get_usetex() else False)
+        _, h_, d_ = mtext._get_text_metrics_with_cache(
+            renderer, "lp", self._text._fontproperties,
+            ismath="TeX" if self._text.get_usetex() else False,
+            dpi=self.get_figure(root=True).dpi)
 
         bbox, info, yd = self._text._get_layout(renderer)
         w, h = bbox.size
@@ -825,17 +826,18 @@ class TextArea(OffsetBox):
 
 class AuxTransformBox(OffsetBox):
     """
-    Offset Box with the aux_transform. Its children will be
-    transformed with the aux_transform first then will be
-    offsetted. The absolute coordinate of the aux_transform is meaning
-    as it will be automatically adjust so that the left-lower corner
-    of the bounding box of children will be set to (0, 0) before the
-    offset transform.
+    An OffsetBox with an auxiliary transform.
 
-    It is similar to drawing area, except that the extent of the box
-    is not predetermined but calculated from the window extent of its
-    children. Furthermore, the extent of the children will be
-    calculated in the transformed coordinate.
+    All child artists are first transformed with *aux_transform*, then
+    translated with an offset (the same for all children) so the bounding
+    box of the children matches the drawn box.  (In other words, adding an
+    arbitrary translation to *aux_transform* has no effect as it will be
+    cancelled out by the later offsetting.)
+
+    `AuxTransformBox` is similar to `.DrawingArea`, except that the extent of
+    the box is not predetermined but calculated from the window extent of its
+    children, and the extent of the children will be calculated in the
+    transformed coordinate.
     """
     def __init__(self, aux_transform):
         self.aux_transform = aux_transform
@@ -852,10 +854,7 @@ class AuxTransformBox(OffsetBox):
         self.stale = True
 
     def get_transform(self):
-        """
-        Return the :class:`~matplotlib.transforms.Transform` applied
-        to the children
-        """
+        """Return the `.Transform` applied to the children."""
         return (self.aux_transform
                 + self.ref_offset_transform
                 + self.offset_transform)
@@ -907,7 +906,7 @@ class AuxTransformBox(OffsetBox):
 
 class AnchoredOffsetbox(OffsetBox):
     """
-    An offset box placed according to location *loc*.
+    An OffsetBox placed according to location *loc*.
 
     AnchoredOffsetbox has a single child.  When multiple children are needed,
     use an extra OffsetBox to enclose them.  By default, the offset box is
@@ -1488,7 +1487,7 @@ class DraggableBase:
     def __init__(self, ref_artist, use_blit=False):
         self.ref_artist = ref_artist
         if not ref_artist.pickable():
-            ref_artist.set_picker(True)
+            ref_artist.set_picker(self._picker)
         self.got_artist = False
         self._use_blit = use_blit and self.canvas.supports_blit
         callbacks = self.canvas.callbacks
@@ -1501,6 +1500,13 @@ class DraggableBase:
                 ("motion_notify_event", self.on_motion),
             ]
         ]
+
+    @staticmethod
+    def _picker(artist, mouseevent):
+        # A custom picker to prevent dragging on mouse scroll events
+        if mouseevent.name == "scroll_event":
+            return False, {}
+        return artist.contains(mouseevent)
 
     # A property, not an attribute, to maintain picklability.
     canvas = property(lambda self: self.ref_artist.get_figure(root=True).canvas)

@@ -241,7 +241,7 @@ def test_negative_rect():
     assert_array_equal(np.roll(neg_vertices, 2, 0), pos_vertices)
 
 
-@image_comparison(['clip_to_bbox'])
+@image_comparison(['clip_to_bbox.png'])
 def test_clip_to_bbox():
     fig, ax = plt.subplots()
     ax.set_xlim([-18, 20])
@@ -999,3 +999,9 @@ def test_set_and_get_hatch_linewidth(fig_test, fig_ref):
 
     assert ax_ref.patches[0].get_hatch_linewidth() == lw
     assert ax_test.patches[0].get_hatch_linewidth() == lw
+
+
+def test_empty_fancyarrow():
+    fig, ax = plt.subplots()
+    arrow = ax.arrow([], [], [], [])
+    assert arrow is not None

@@ -566,6 +566,12 @@ class _AxesBase(martist.Artist):
     dataLim: mtransforms.Bbox
     """The bounding `.Bbox` enclosing all data displayed in the Axes."""
 
+    spines: mspines.Spines
+    """
+    The `.Spines` container for the Axes' spines, i.e. the lines denoting the
+    data area boundaries.
+    """
+
     xaxis: maxis.XAxis
     """
     The `.XAxis` instance.
@@ -1612,7 +1618,7 @@ class _AxesBase(martist.Artist):
 
         Parameters
         ----------
-        cycler : `~cycler.Cycler`
+        cycler : `~cycler.Cycler` or ``None``
             Set the given Cycler. *None* resets to the cycle defined by the
             current style.
 
@@ -2367,7 +2373,17 @@ class _AxesBase(martist.Artist):
                 # the call so that self.dataLim will update its own minpos.
                 # This ensures that log scales see the correct minimum.
                 points = np.concatenate([points, [datalim.minpos]])
-            self.update_datalim(points)
+            # only update the dataLim for x/y if the collection uses transData
+            # in this direction.
+            x_is_data, y_is_data = (collection.get_transform()
+                                    .contains_branch_seperately(self.transData))
+            ox_is_data, oy_is_data = (collection.get_offset_transform()
+                                      .contains_branch_seperately(self.transData))
+            self.update_datalim(
+                points,
+                updatex=x_is_data or ox_is_data,
+                updatey=y_is_data or oy_is_data,
+            )
 
         self.stale = True
         return collection
@@ -4687,14 +4703,25 @@ class _AxesBase(martist.Artist):
         self._label_outer_yaxis(skip_non_rectangular_axes=False,
                                 remove_inner_ticks=remove_inner_ticks)
 
+    def _get_subplotspec_with_optional_colorbar(self):
+        """
+        Return the subplotspec for this Axes, except that if this Axes has been
+        moved to a subgridspec to make room for a colorbar, then return the
+        subplotspec that encloses both this Axes and the colorbar Axes.
+        """
+        ss = self.get_subplotspec()
+        if any(cax.get_subplotspec() for cax in self._colorbars):
+            ss = ss.get_gridspec()._subplot_spec
+        return ss
+
     def _label_outer_xaxis(self, *, skip_non_rectangular_axes,
                            remove_inner_ticks=False):
         # see documentation in label_outer.
         if skip_non_rectangular_axes and not isinstance(self.patch,
                                                         mpl.patches.Rectangle):
             return
-        ss = self.get_subplotspec()
-        if not ss:
+        ss = self._get_subplotspec_with_optional_colorbar()
+        if ss is None:
             return
         label_position = self.xaxis.get_label_position()
         if not ss.is_first_row():  # Remove top label/ticklabels/offsettext.
@@ -4720,8 +4747,8 @@ class _AxesBase(martist.Artist):
         if skip_non_rectangular_axes and not isinstance(self.patch,
                                                         mpl.patches.Rectangle):
             return
-        ss = self.get_subplotspec()
-        if not ss:
+        ss = self._get_subplotspec_with_optional_colorbar()
+        if ss is None:
             return
         label_position = self.yaxis.get_label_position()
         if not ss.is_first_col():  # Remove left label/ticklabels/offsettext.

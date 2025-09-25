@@ -66,7 +66,7 @@ def generate_EventCollection_plot():
     return ax, coll, props
 
 
-@image_comparison(['EventCollection_plot__default'])
+@image_comparison(['EventCollection_plot__default.png'])
 def test__EventCollection__get_props():
     _, coll, props = generate_EventCollection_plot()
     # check that the default segments have the correct coordinates
@@ -92,7 +92,7 @@ def test__EventCollection__get_props():
         np.testing.assert_array_equal(color, props['color'])
 
 
-@image_comparison(['EventCollection_plot__set_positions'])
+@image_comparison(['EventCollection_plot__set_positions.png'])
 def test__EventCollection__set_positions():
     splt, coll, props = generate_EventCollection_plot()
     new_positions = np.hstack([props['positions'], props['extra_positions']])
@@ -106,7 +106,7 @@ def test__EventCollection__set_positions():
     splt.set_xlim(-1, 90)
 
 
-@image_comparison(['EventCollection_plot__add_positions'])
+@image_comparison(['EventCollection_plot__add_positions.png'])
 def test__EventCollection__add_positions():
     splt, coll, props = generate_EventCollection_plot()
     new_positions = np.hstack([props['positions'],
@@ -124,7 +124,7 @@ def test__EventCollection__add_positions():
     splt.set_xlim(-1, 35)
 
 
-@image_comparison(['EventCollection_plot__append_positions'])
+@image_comparison(['EventCollection_plot__append_positions.png'])
 def test__EventCollection__append_positions():
     splt, coll, props = generate_EventCollection_plot()
     new_positions = np.hstack([props['positions'],
@@ -140,7 +140,7 @@ def test__EventCollection__append_positions():
     splt.set_xlim(-1, 90)
 
 
-@image_comparison(['EventCollection_plot__extend_positions'])
+@image_comparison(['EventCollection_plot__extend_positions.png'])
 def test__EventCollection__extend_positions():
     splt, coll, props = generate_EventCollection_plot()
     new_positions = np.hstack([props['positions'],
@@ -156,7 +156,7 @@ def test__EventCollection__extend_positions():
     splt.set_xlim(-1, 90)
 
 
-@image_comparison(['EventCollection_plot__switch_orientation'])
+@image_comparison(['EventCollection_plot__switch_orientation.png'])
 def test__EventCollection__switch_orientation():
     splt, coll, props = generate_EventCollection_plot()
     new_orientation = 'vertical'
@@ -173,7 +173,7 @@ def test__EventCollection__switch_orientation():
     splt.set_xlim(0, 2)
 
 
-@image_comparison(['EventCollection_plot__switch_orientation__2x'])
+@image_comparison(['EventCollection_plot__switch_orientation__2x.png'])
 def test__EventCollection__switch_orientation_2x():
     """
     Check that calling switch_orientation twice sets the orientation back to
@@ -194,7 +194,7 @@ def test__EventCollection__switch_orientation_2x():
     splt.set_title('EventCollection: switch_orientation 2x')
 
 
-@image_comparison(['EventCollection_plot__set_orientation'])
+@image_comparison(['EventCollection_plot__set_orientation.png'])
 def test__EventCollection__set_orientation():
     splt, coll, props = generate_EventCollection_plot()
     new_orientation = 'vertical'
@@ -211,7 +211,7 @@ def test__EventCollection__set_orientation():
     splt.set_xlim(0, 2)
 
 
-@image_comparison(['EventCollection_plot__set_linelength'])
+@image_comparison(['EventCollection_plot__set_linelength.png'])
 def test__EventCollection__set_linelength():
     splt, coll, props = generate_EventCollection_plot()
     new_linelength = 15
@@ -226,7 +226,7 @@ def test__EventCollection__set_linelength():
     splt.set_ylim(-20, 20)
 
 
-@image_comparison(['EventCollection_plot__set_lineoffset'])
+@image_comparison(['EventCollection_plot__set_lineoffset.png'])
 def test__EventCollection__set_lineoffset():
     splt, coll, props = generate_EventCollection_plot()
     new_lineoffset = -5.
@@ -242,9 +242,9 @@ def test__EventCollection__set_lineoffset():
 
 
 @image_comparison([
-    'EventCollection_plot__set_linestyle',
-    'EventCollection_plot__set_linestyle',
-    'EventCollection_plot__set_linewidth',
+    'EventCollection_plot__set_linestyle.png',
+    'EventCollection_plot__set_linestyle.png',
+    'EventCollection_plot__set_linewidth.png',
 ])
 def test__EventCollection__set_prop():
     for prop, value, expected in [
@@ -258,7 +258,7 @@ def test__EventCollection__set_prop():
         splt.set_title(f'EventCollection: set_{prop}')
 
 
-@image_comparison(['EventCollection_plot__set_color'])
+@image_comparison(['EventCollection_plot__set_color.png'])
 def test__EventCollection__set_color():
     splt, coll, _ = generate_EventCollection_plot()
     new_color = np.array([0, 1, 1, 1])
@@ -877,17 +877,24 @@ def test_collection_set_array():
 
 
 def test_blended_collection_autolim():
-    a = [1, 2, 4]
-    height = .2
-
-    xy_pairs = np.column_stack([np.repeat(a, 2), np.tile([0, height], len(a))])
-    line_segs = xy_pairs.reshape([len(a), 2, 2])
-
     f, ax = plt.subplots()
+
+    # sample data to give initial data limits
+    ax.plot([2, 3, 4], [0.4, 0.6, 0.5])
+    np.testing.assert_allclose((ax.dataLim.xmin, ax.dataLim.xmax), (2, 4))
+    data_ymin, data_ymax = ax.dataLim.ymin, ax.dataLim.ymax
+
+    # LineCollection with vertical lines spanning the Axes vertical, using transAxes
+    x = [1, 2, 3, 4, 5]
+    vertical_lines = [np.array([[xi, 0], [xi, 1]]) for xi in x]
     trans = mtransforms.blended_transform_factory(ax.transData, ax.transAxes)
-    ax.add_collection(LineCollection(line_segs, transform=trans))
-    ax.autoscale_view(scalex=True, scaley=False)
-    np.testing.assert_allclose(ax.get_xlim(), [1., 4.])
+    ax.add_collection(LineCollection(vertical_lines, transform=trans))
+
+    # check that the x data limits are updated to include the LineCollection
+    np.testing.assert_allclose((ax.dataLim.xmin, ax.dataLim.xmax), (1, 5))
+    # check that the y data limits are not updated (because they are not transData)
+    np.testing.assert_allclose((ax.dataLim.ymin, ax.dataLim.ymax),
+                               (data_ymin, data_ymax))
 
 
 def test_singleton_autolim():
